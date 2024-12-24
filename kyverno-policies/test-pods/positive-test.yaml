@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: workspace-pod-positive
+  labels:
+    workspace-id: ws111222
+spec:
+  volumes:
+  - name: public-vol
+    hostPath:
+      path: "/mnt/workspace/public/test"
+  - name: private-vol
+    hostPath:
+      path: "/mnt/workspace/private/test"
+  containers:
+  - name: test-container
+    image: busybox
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: public-vol
+      mountPath: "/data/public"
+    - name: private-vol
+      mountPath: "/data/private"
