@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-no-matching
+  labels:
+    workspace-id: ws111222
+spec:
+  containers:
+  - image: k8s.gcr.io/test-webserver
+    name: test-container
+    volumeMounts:
+    - mountPath: /test0
+      name: test-volume
+    - mountPath: /test1
+      name: test-volume1
+  volumes:
+  - name: test-volume
+    hostPath:
+      path: /data
+      type: DirectoryOrCreate
+  - name: test-volume1
+    hostPath:
+      path: /data2
+      type: DirectoryOrCreate
