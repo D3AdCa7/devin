@@ -46,6 +46,16 @@ int main() {
         6.0, -std::numeric_limits<double>::infinity(),
         8.0, 9.0, 10.0
     };
+    
+    // Test case for window with only invalid values
+    std::vector<double> all_invalid_data = {
+        1.0, 2.0,  // Normal values before
+        std::numeric_limits<double>::quiet_NaN(),
+        std::numeric_limits<double>::infinity(),
+        -std::numeric_limits<double>::infinity(),
+        8.0, 9.0  // Normal values after
+    };
+    
     size_t test_window = 3;
     
     std::cout << "Testing invalid value handling (window=" << test_window << "):\n";
@@ -60,13 +70,24 @@ int main() {
     // Test each operator with invalid values
     for (const auto& op_name : {"mean", "std", "rsi"}) {
         if (auto op = registry.getOperator(op_name)) {
-            std::cout << op_name << " results:\n";
+            std::cout << op_name << " results for mixed valid/invalid data:\n";
             auto results = op->calculate(invalid_data, test_window);
             for (size_t i = 0; i < results.size(); ++i) {
                 std::cout << "Window " << i + 1 << ": ";
                 if (std::isnan(results[i])) std::cout << "NaN";
                 else if (std::isinf(results[i])) std::cout << (results[i] > 0 ? "+Inf" : "-Inf");
                 else std::cout << std::fixed << std::setprecision(4) << results[i];
+                std::cout << "\n";
+            }
+            std::cout << "\n";
+            
+            std::cout << op_name << " results for window with only invalid values:\n";
+            auto results2 = op->calculate(all_invalid_data, test_window);
+            for (size_t i = 0; i < results2.size(); ++i) {
+                std::cout << "Window " << i + 1 << ": ";
+                if (std::isnan(results2[i])) std::cout << "NaN";
+                else if (std::isinf(results2[i])) std::cout << (results2[i] > 0 ? "+Inf" : "-Inf");
+                else std::cout << std::fixed << std::setprecision(4) << results2[i];
                 std::cout << "\n";
             }
             std::cout << "\n";
