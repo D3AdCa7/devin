@@ -1,6 +1,8 @@
 #pragma once
 #include "operator_base.hpp"
+#include "util.hpp"
 #include <numeric>
+#include <limits>
 
 namespace operators {
 
@@ -18,15 +20,35 @@ public:
         std::vector<double> result;
         result.reserve(x.size() - n + 1);
         
-        // Calculate initial window sum
-        double window_sum = std::accumulate(x.begin(), x.begin() + n, 0.0);
-        result.push_back(window_sum / n);
+        // Calculate initial window sum and valid count
+        double window_sum = 0.0;
+        size_t valid_count = 0;
+        for (size_t i = 0; i < n; ++i) {
+            if (isValid(x[i])) {
+                window_sum += x[i];
+                ++valid_count;
+            }
+        }
+        
+        // Push first window result
+        result.push_back(valid_count > 0 ? window_sum / valid_count : std::numeric_limits<double>::quiet_NaN());
         
         // Use sliding window for subsequent calculations
         for (size_t i = 1; i <= x.size() - n; ++i) {
-            // Subtract element leaving the window and add element entering the window
-            window_sum = window_sum - x[i-1] + x[i+n-1];
-            result.push_back(window_sum / n);
+            // Subtract element leaving the window if valid
+            if (isValid(x[i-1])) {
+                window_sum -= x[i-1];
+                --valid_count;
+            }
+            
+            // Add element entering the window if valid
+            if (isValid(x[i+n-1])) {
+                window_sum += x[i+n-1];
+                ++valid_count;
+            }
+            
+            // Calculate mean or NaN if no valid values
+            result.push_back(valid_count > 0 ? window_sum / valid_count : std::numeric_limits<double>::quiet_NaN());
         }
         
         return result;

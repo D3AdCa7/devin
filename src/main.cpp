@@ -39,6 +39,40 @@ int main() {
     registry.registerOperator(std::make_unique<operators::StdOperator>());
     registry.registerOperator(std::make_unique<operators::RSIOperator>());
 
+    // Test invalid value handling
+    std::vector<double> invalid_data = {
+        1.0, 2.0, std::numeric_limits<double>::quiet_NaN(),
+        4.0, std::numeric_limits<double>::infinity(),
+        6.0, -std::numeric_limits<double>::infinity(),
+        8.0, 9.0, 10.0
+    };
+    size_t test_window = 3;
+    
+    std::cout << "Testing invalid value handling (window=" << test_window << "):\n";
+    std::cout << "Test data: ";
+    for (const auto& val : invalid_data) {
+        if (std::isnan(val)) std::cout << "NaN ";
+        else if (std::isinf(val)) std::cout << (val > 0 ? "+Inf " : "-Inf ");
+        else std::cout << val << " ";
+    }
+    std::cout << "\n\n";
+
+    // Test each operator with invalid values
+    for (const auto& op_name : {"mean", "std", "rsi"}) {
+        if (auto op = registry.getOperator(op_name)) {
+            std::cout << op_name << " results:\n";
+            auto results = op->calculate(invalid_data, test_window);
+            for (size_t i = 0; i < results.size(); ++i) {
+                std::cout << "Window " << i + 1 << ": ";
+                if (std::isnan(results[i])) std::cout << "NaN";
+                else if (std::isinf(results[i])) std::cout << (results[i] > 0 ? "+Inf" : "-Inf");
+                else std::cout << std::fixed << std::setprecision(4) << results[i];
+                std::cout << "\n";
+            }
+            std::cout << "\n";
+        }
+    }
+
     // Test with small dataset first to verify correctness
     std::vector<double> small_data = {10, 12, 14, 11, 13, 15, 12, 14, 16};
     size_t small_window = 3;

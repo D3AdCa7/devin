@@ -216,6 +216,7 @@ CMakeFiles/operators_demo.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/bits/erase_if.h \
  /home/ubuntu/operators_project/include/operators/mean_operator.hpp \
+ /home/ubuntu/operators_project/include/operators/util.hpp \
  /home/ubuntu/operators_project/include/operators/std_operator.hpp \
  /home/ubuntu/operators_project/include/operators/rsi_operator.hpp \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
