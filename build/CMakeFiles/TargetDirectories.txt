@@ -1,0 +1,3 @@
+/home/ubuntu/operators_project/build/CMakeFiles/operators_demo.dir
+/home/ubuntu/operators_project/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/operators_project/build/CMakeFiles/rebuild_cache.dir
