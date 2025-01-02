@@ -1,0 +1,57 @@
+Response Structure Update Plan
+
+1. Current Structure:
+   Successful Login:
+   {
+       "success": true,
+       "message": "Login successful",
+       "userId": 123,
+       "userDetails": {
+           "firstName": "John",
+           "lastName": "Doe",
+           "emailVerified": true
+       }
+   }
+
+   Failed Login:
+   {
+       "success": false,
+       "message": "Invalid email or password",
+       "userId": null
+   }
+
+2. New Structure:
+   Successful Login:
+   {
+       "success": true,
+       "message": "Login successful",
+       "user": {
+           "id": 123,
+           "firstName": "John",
+           "lastName": "Doe",
+           "emailVerified": true
+       }
+   }
+
+   Failed Login:
+   {
+       "success": false,
+       "message": "Invalid email or password"
+   }
+
+3. Changes Required:
+   a) WhmcsApi.php:
+      - Move userId into user object as 'id'
+      - Rename userDetails to user
+      - Remove null userId from error responses
+      - Update validateLogin and getClientDetails methods
+
+   b) index.php:
+      - Update response handling
+      - Remove null value handling for userDetails
+      - Update error response structure
+
+4. Testing Plan:
+   - Test successful login response format
+   - Test failed login response format
+   - Verify no null values in error responses

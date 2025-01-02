@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: workspace-pod-negative-2
+spec:
+  volumes:
+  - name: public-vol
+    hostPath:
+      path: "/mnt/workspace/public/test"
+  containers:
+  - name: test-container
+    image: busybox
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: public-vol
+      mountPath: "/data/public"

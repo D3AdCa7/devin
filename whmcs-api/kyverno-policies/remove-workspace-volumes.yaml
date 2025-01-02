@@ -1,0 +1,43 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: remove-workspace-volumes
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+  - name: remove-public-workspace-vols
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          selector:
+            matchLabels:
+              workspace-id: "*"
+    preconditions:
+      all:
+      - key: "{{ request.object.spec.volumes[].hostPath.path || '' }}"
+        operator: AnyIn
+        value:
+        - "/mnt/workspace/public*"
+    mutate:
+      foreach:
+      - list: request.object.spec.volumes
+        preconditions:
+          all:
+          - key: "{{ element.hostPath.path }}"
+            operator: StartsWith
+            value: "/mnt/workspace/public"
+        patchesJson6902:
+        - op: remove
+          path: "/spec/volumes/{{ elementIndex }}"
+      - list: request.object.spec.containers[*].volumeMounts
+        preconditions:
+          all:
+          - key: "{{ element.name }}"
+            operator: AnyIn
+            value: "{{ request.object.spec.volumes[?hostPath.path startsWith '/mnt/workspace/public'].name }}"
+        patchesJson6902:
+        - op: remove
+          path: "/spec/containers/{{ elementIndex }}/volumeMounts/{{ elementIndex2 }}"
