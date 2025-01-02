@@ -119,10 +119,10 @@ class WhmcsApi {
                         'user' => $userDetails['details']
                     ];
                 }
-                // If getting user details fails, still return successful login but with error message
+                // If getting user details fails, treat it as a complete error
                 return [
-                    'success' => true,
-                    'message' => 'Login successful but ' . $userDetails['message']
+                    'success' => false,
+                    'message' => 'Internal error retrieving user details'
                 ];
             }
             return [
@@ -138,8 +138,7 @@ class WhmcsApi {
     }
 
     public function addClient($userData) {
-        $requiredFields = ['firstname', 'lastname', 'email', 'password', 'address1', 
-                          'city', 'state', 'postcode', 'country', 'phonenumber'];
+        $requiredFields = ['firstname', 'lastname', 'email', 'password', 'country'];
         
         // Validate required fields
         foreach ($requiredFields as $field) {

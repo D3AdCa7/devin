@@ -37,12 +37,7 @@ WHMCS API Integration Implementation Plan
         "lastname": "string",
         "email": "string",
         "password": "string",
-        "address1": "string",
-        "city": "string",
-        "state": "string",
-        "postcode": "string",
-        "country": "string",
-        "phonenumber": "string"
+        "country": "string"
       }
       Response:
       {
