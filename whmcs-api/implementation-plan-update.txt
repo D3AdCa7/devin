@@ -1,0 +1,44 @@
+Login API Enhancement Plan
+
+1. Current Flow:
+   - ValidateLogin API call
+   - Returns success/failure and userid
+
+2. Enhanced Flow:
+   - ValidateLogin API call
+   - If successful, call GetClientsDetails API with userid
+   - Combine results and return enhanced response
+
+3. Required Changes:
+   a) WhmcsApi.php:
+      - Modify validateLogin method to make additional API call
+      - Add getClientDetails helper method
+      - Update response structure to include user details
+
+   b) Response Format:
+      {
+        "success": boolean,
+        "message": string,
+        "userId": number,
+        "userDetails": {
+          "firstName": string,
+          "lastName": string,
+          "emailVerified": boolean
+        }
+      }
+
+4. Implementation Steps:
+   1. Add getClientDetails method to WhmcsApi class
+   2. Update validateLogin to use getClientDetails
+   3. Modify response structure
+   4. Update error handling for the additional API call
+
+5. Error Handling:
+   - Handle potential failures in GetClientsDetails API call
+   - Maintain backward compatibility
+   - Return appropriate error messages
+
+6. Testing:
+   - Test successful login with details
+   - Test failed login
+   - Test API error scenarios
